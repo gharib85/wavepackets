@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
-zeta = 0.3 
-npoints = 100
+zeta = 0.05
+npoints = 500
 xdist = 50
 xpoints,spacing = np.linspace(-xdist,xdist,npoints,True,True)
 pdist = 10
@@ -26,22 +26,26 @@ plt.ion()
 # Position-space plot
 fig = plt.figure()
 ax0 = plt.subplot2grid((2,3),(0,0))
+ax0.set_title("Position-Space Wavefunction",fontsize=8)
 ax0.set_xlim([-xdist,xdist])
 psi_x_line, = ax0.plot(xpoints,np.square(np.absolute(psi_x)),color="blue")
 
 # Momentum-space plot
 ax1 = plt.subplot2grid((2,3),(0,1))
+ax1.set_title("Momentum-Space Wavefunction (FFT)",fontsize=8)
 ax1.set_xlim([-10,10])
 psi_p_line, = ax1.plot(2*np.pi*freqs,(1/mag)*np.square(np.absolute(psi_p_initial)),color="red")
 
 # Analytic momentum space plot
 ax2 = plt.subplot2grid((2,3),(0,2))
+ax2.set_title("Momentum-Space Wavefunction (FFT)",fontsize=8)
 psi_p_analytic_line, = ax2.plot(ppoints,np.square(np.absolute(psi_p_analytic)),color="green")
 
 # Fourier representation periodicity plot 
 # Six periodic instances of the Gaussian
 # A bit tricky because origin is at the center of our interval, so need to add appropriate phase
 ax3 = plt.subplot2grid((2,3),(1,0),colspan=3)
+ax3.set_title("Fourier Transform Periodicity",fontsize=10)
 periodic_interval =  np.linspace(-6.5*xdist,6.5*xdist,7*npoints,True)
 phase = np.array([xpoints[0]] * len(periodic_interval)) 
 all_waves_at_all_points = np.exp(2*np.pi*1j*np.outer(freqs,periodic_interval - phase))
@@ -53,7 +57,7 @@ psi_x_periodic_line, = ax3.plot(periodic_interval,np.square(np.absolute(psi_x_pe
 plt.tight_layout()
 
 # Propagate - set particle mass magnitue equal to 2*hbar for simplicity
-for time_step in np.arange(0,1000,10):
+for time_step in np.arange(0,2000,10):
     psi_p = np.multiply(np.exp(-1j*np.square(freqs)*time_step),psi_p_initial)
 
     psi_x = np.fft.ifft(np.fft.ifftshift(psi_p))
