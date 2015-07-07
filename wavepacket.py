@@ -7,7 +7,7 @@ import numpy as np
 import time
 
 zeta = 0.3 
-npoints = 1000
+npoints = 100
 xdist = 50
 xpoints,spacing = np.linspace(-xdist,xdist,npoints,True,True)
 pdist = 10
@@ -45,25 +45,30 @@ ax3 = plt.subplot2grid((2,3),(1,0),colspan=3)
 periodic_interval =  np.linspace(-6.5*xdist,6.5*xdist,7*npoints,True)
 phase = np.array([xpoints[0]] * len(periodic_interval)) 
 all_waves_at_all_points = np.exp(2*np.pi*1j*np.outer(freqs,periodic_interval - phase))
-print all_waves_at_all_points.shape
-print psi_p_initial.shape
+ax3.set_xlim([-6.5*xdist,6.5*xdist])
 psi_x_periodic = 1.0/(len(psi_p_initial))*np.dot(psi_p_initial,all_waves_at_all_points)
-#psi_x_periodic = 1.0/(len(psi_p_initial))*np.array([np.sum(np.multiply(psi_p_initial,np.exp(2*np.pi*1j*freqs*x))) for x in periodic_interval])
 psi_x_periodic_line, = ax3.plot(periodic_interval,np.square(np.absolute(psi_x_periodic)),color="purple")
+
 
 plt.tight_layout()
 
 # Propagate - set particle mass magnitue equal to 2*hbar for simplicity
-for time_step in np.arange(0,1000,1):
+for time_step in np.arange(0,1000,10):
     psi_p = np.multiply(np.exp(-1j*np.square(freqs)*time_step),psi_p_initial)
 
     psi_x = np.fft.ifft(np.fft.ifftshift(psi_p))
     psi_x_line.set_ydata(np.square(np.absolute(psi_x)))
 
-    # Update momentum-space representation  
-    #psi_p_analytic_line.set_ydata(np.square(np.absolute(psi_p_analytic)))
+    # Update momentum-space representation - for free particle will not change
     mag = np.trapz(np.multiply(np.absolute(psi_p),np.absolute(psi_p)),2*np.pi*freqs)
     psi_p_line.set_ydata((1/mag)*np.square(np.absolute(psi_p)))
 
+    # Update periodic repr
+    all_waves_at_all_points = np.exp(2*np.pi*1j*np.outer(freqs,periodic_interval - phase))
+    psi_x_periodic = 1.0/(len(psi_p))*np.dot(psi_p,all_waves_at_all_points)
+    psi_x_periodic_line.set_ydata(np.square(np.absolute(psi_x_periodic)))
+
     plt.draw()
     time.sleep(0.01)
+plt.ioff()
+plt.show()
