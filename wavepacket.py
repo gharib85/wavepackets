@@ -27,7 +27,7 @@ plt.ion()
 fig = plt.figure()
 ax0 = plt.subplot2grid((2,3),(0,0))
 ax0.set_xlim([-xdist,xdist])
-psi_x_line, = ax0.plot(xpoints,np.square(psi_x),color="blue")
+psi_x_line, = ax0.plot(xpoints,np.square(np.absolute(psi_x)),color="blue")
 
 # Momentum-space plot
 ax1 = plt.subplot2grid((2,3),(0,1))
@@ -40,10 +40,15 @@ psi_p_analytic_line, = ax2.plot(ppoints,np.square(np.absolute(psi_p_analytic)),c
 
 # Fourier representation periodicity plot 
 # Six periodic instances of the Gaussian
+# A bit tricky because origin is at the center of our interval, so need to add appropriate phase
 ax3 = plt.subplot2grid((2,3),(1,0),colspan=3)
-periodic_interval =  np.linspace(-6*xdist,6*xdist,6*npoints,True)
-all_waves_at_all_points = np.exp(2*np.pi*1j*np.outer(freqs,periodic_interval))
+periodic_interval =  np.linspace(-6.5*xdist,6.5*xdist,7*npoints,True)
+phase = np.array([xpoints[0]] * len(periodic_interval)) 
+all_waves_at_all_points = np.exp(2*np.pi*1j*np.outer(freqs,periodic_interval - phase))
+print all_waves_at_all_points.shape
+print psi_p_initial.shape
 psi_x_periodic = 1.0/(len(psi_p_initial))*np.dot(psi_p_initial,all_waves_at_all_points)
+#psi_x_periodic = 1.0/(len(psi_p_initial))*np.array([np.sum(np.multiply(psi_p_initial,np.exp(2*np.pi*1j*freqs*x))) for x in periodic_interval])
 psi_x_periodic_line, = ax3.plot(periodic_interval,np.square(np.absolute(psi_x_periodic)),color="purple")
 
 plt.tight_layout()
@@ -52,7 +57,7 @@ plt.tight_layout()
 for time_step in np.arange(0,1000,1):
     psi_p = np.multiply(np.exp(-1j*np.square(freqs)*time_step),psi_p_initial)
 
-    psi_x = np.fft.ifft(psi_p)
+    psi_x = np.fft.ifft(np.fft.ifftshift(psi_p))
     psi_x_line.set_ydata(np.square(np.absolute(psi_x)))
 
     # Update momentum-space representation  
