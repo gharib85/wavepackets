@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+#
+# This script demonstrates the periodic nature of the wavefunction produced by time propagation using the Fourier transform
+#
+# by Samuel Manzer (samuelmanzer.com)
 
 import matplotlib
 matplotlib.use('tkagg')
@@ -26,19 +30,19 @@ plt.ion()
 # Position-space plot
 fig = plt.figure()
 ax0 = plt.subplot2grid((2,3),(0,0))
-ax0.set_title("Position-Space Wavefunction",fontsize=8)
+ax0.set_title("Position-Space |Wavefunction|^2",fontsize=8)
 ax0.set_xlim([-xdist,xdist])
 psi_x_line, = ax0.plot(xpoints,np.square(np.absolute(psi_x)),color="blue")
 
 # Momentum-space plot
 ax1 = plt.subplot2grid((2,3),(0,1))
-ax1.set_title("Momentum-Space Wavefunction (FFT)",fontsize=8)
+ax1.set_title("Momentum-Space |Wavefunction|^2 (FFT)",fontsize=8)
 ax1.set_xlim([-10,10])
 psi_p_line, = ax1.plot(2*np.pi*freqs,(1/mag)*np.square(np.absolute(psi_p_initial)),color="red")
 
 # Analytic momentum space plot
 ax2 = plt.subplot2grid((2,3),(0,2))
-ax2.set_title("Momentum-Space Wavefunction (FFT)",fontsize=8)
+ax2.set_title("Momentum-Space |Wavefunction|^2 (Exact)",fontsize=8)
 psi_p_analytic_line, = ax2.plot(ppoints,np.square(np.absolute(psi_p_analytic)),color="green")
 
 # Fourier representation periodicity plot 
