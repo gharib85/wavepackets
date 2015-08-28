@@ -1,6 +1,9 @@
 #!/usr/bin/env python
-#
-#
+# 
+# Demonstrates scattering of a Gaussian wave packet from a step potential 
+# 
+# Shows the superior agreement given by formula  
+# of McKagan et al. (arXiv:0808.3566) compared to standard plane-wave approaches
 #
 # by Samuel Manzer (samuelmanzer.com)
 
