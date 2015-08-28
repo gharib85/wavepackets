@@ -60,9 +60,10 @@ psi_x_periodic_line, = ax3.plot(periodic_interval,np.square(np.absolute(psi_x_pe
 
 plt.tight_layout()
 
-# Propagate - set particle mass magnitue equal to 2*hbar for simplicity
-for time_step in np.arange(0,2000,10):
-    psi_p = np.multiply(np.exp(-1j*np.square(freqs)*time_step),psi_p_initial)
+# Propagate - set particle mass magnitue equal to hbar^2/2 for simplicity
+# Time is in increments scaled by hbar
+for time_step in np.arange(0,40,0.2):
+    psi_p = np.multiply(np.exp(-1j*np.square(2*np.pi*freqs)*time_step),psi_p_initial)
 
     psi_x = np.fft.ifft(np.fft.ifftshift(psi_p))
     psi_x_line.set_ydata(np.square(np.absolute(psi_x)))
@@ -77,6 +78,5 @@ for time_step in np.arange(0,2000,10):
     psi_x_periodic_line.set_ydata(np.square(np.absolute(psi_x_periodic)))
 
     plt.draw()
-    time.sleep(0.01)
 plt.ioff()
 plt.show()
